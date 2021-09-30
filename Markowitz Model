@@ -1,0 +1,106 @@
+#Import the python libraries
+from pandas_datareader import data as web
+import pandas as pd
+import numpy as np
+from datetime import datetime
+import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+
+#Get Stock tickers
+assets = ['SPGI', 'MCO', 'VZ', 'T', 'TSLA', 'TM', 'PG', 'NKE', 'KO', 'DIS', 'CMCSA' , 'MCD', 'SYY', 'AAPL', 'INTC', 'NVDA', 'RTX', 'XOM', 'BRK-B', 'V', 'JPM', 'UNH', 'CI', 'JNJ', 'PFE', 'ENB', 'WM', 'BHP', 'SHW', 'ASML', 'HON', 'GE', 'AMZN', 'BABA' , 'WMT', 'HD', 'SHOP', 'MSFT', 'GOOGL', 'FB', 'PYPL', 'SPY', 'CRM', 'SQ', 'UPS', 'FDX', 'LUV', 'D', 'SPG', 'O']
+
+#Assign weights to the stocks
+weights = np.array([0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02])
+
+#Get portfolio starting date
+stockStartDate = '2020-07-01'
+
+# Get portfolio ending date
+stockEndDate = '2021-07-01'
+
+#Create a dataframe to store adj close price
+df = pd.DataFrame()
+
+#Store adj close price into df
+for stock in assets:
+    df[stock] = web.DataReader(stock, data_source='yahoo', start = stockStartDate, end = stockEndDate)['Adj Close']
+    
+#Show the df
+df
+
+#Visual representation of portfolio
+title = 'Portfolio Adj. Close Price History'
+
+#Get the stocks
+my_stocks = df
+
+#Create and plot the graph
+plt.figure(figsize=(12.2,4.5))
+
+#Plot graph
+for c in my_stocks.columns.values:
+    plt.plot(my_stocks[c], label = c)
+    
+plt.title
+plt.xlabel('Date', fontsize = 12)
+plt.ylabel('Adj. Price USD ($)', fontsize = 12)
+plt.legend(my_stocks.columns.values, loc= 'lower right')
+plt.show()
+
+#show the daily simple return
+returns = df.pct_change()
+returns
+
+#Create anualized covariance matrix
+cov_matrix_annual = returns.cov()*252
+cov_matrix_annual
+
+#Calculate portfolio variance
+port_variance = np.dot(weights.T, np.dot(cov_matrix_annual, weights))
+port_variance
+
+#Calculate portfolio volatility (stand. dev.)
+port_volatility = np.sqrt(port_variance)
+port_volatility
+
+#Annual Portfolio return
+portfolioSimpleAnnualReturn = np.sum(returns.mean() * weights) * 252
+portfolioSimpleAnnualReturn
+
+#Show the expected annual return, volatility (risk), variance
+percent_var = str(round(port_variance, 2) * 100) + '%'
+percent_vols = str(round(port_volatility, 2) * 100) + '%'
+percent_ret = str(round(portfolioSimpleAnnualReturn, 2)* 100) + '%'
+
+print('Expected annual return: ' + percent_ret)
+print('Annual volatility/risk: ' +percent_vols)
+print('Annual variance: ' + percent_var)
+
+#import packages from PyPortfolioOpt
+from pypfopt.efficient_frontier import EfficientFrontier
+from pypfopt import risk_models
+from pypfopt import expected_returns
+
+#Portfolio Optimization
+
+#Calculate expected returns and annualized sample cov matrix 
+mu = expected_returns.mean_historical_return(df)
+S = risk_models.sample_cov(df)
+
+#optimize for max sharpe ratio
+ef = EfficientFrontier(mu, S)
+weights = ef.max_sharpe()
+cleaned_weights = ef.clean_weights()
+print(cleaned_weights)
+ef.portfolio_performance(verbose = True)
+
+# Get discrete allocation of each share per stock
+from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
+
+latest_prices = get_latest_prices(df)
+weights = cleaned_weights
+da = DiscreteAllocation(weights, latest_prices, total_portfolio_value = 10000)
+
+allocation , leftover = da.lp_portfolio()
+print('Discrete allocation:', allocation)
+print('Funds remaining: ${:.2f}'.format(leftover))
