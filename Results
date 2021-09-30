@@ -1,0 +1,7 @@
+OrderedDict([('SPGI', 0.0), ('MCO', 0.0), ('VZ', 0.0), ('T', 0.0), ('TSLA', 0.08799), ('TM', 0.02797), ('PG', 0.0), ('NKE', 0.10204), ('KO', 0.0), ('DIS', 0.0), ('CMCSA', 0.0), ('MCD', 0.0), ('SYY', 0.0), ('AAPL', 0.0), ('INTC', 0.0), ('NVDA', 0.09199), ('RTX', 0.0), ('XOM', 0.0), ('BRK-B', 0.162), ('V', 0.0), ('JPM', 0.05478), ('UNH', 0.0), ('CI', 0.0), ('JNJ', 0.0), ('PFE', 0.0), ('ENB', 0.0), ('WM', 0.0), ('BHP', 0.0), ('SHW', 0.0), ('ASML', 0.0), ('HON', 0.0), ('GE', 0.17913), ('AMZN', 0.0), ('BABA', 0.0), ('WMT', 0.0), ('HD', 0.0), ('SHOP', 0.0), ('MSFT', 0.0), ('GOOGL', 0.04006), ('FB', 0.0), ('PYPL', 0.0), ('SPY', 0.0), ('CRM', 0.0), ('SQ', 0.01167), ('UPS', 0.19416), ('FDX', 0.04291), ('LUV', 0.0), ('D', 0.0), ('SPG', 0.0053), ('O', 0.0)])
+Expected annual return: 92.9%
+Annual volatility: 18.5%
+Sharpe Ratio: 4.91
+
+Discrete allocation: {'TSLA': 1, 'TM': 2, 'NKE': 6, 'NVDA': 5, 'BRK-B': 6, 'JPM': 4, 'GE': 17, 'SQ': 1, 'UPS': 9, 'FDX': 2, 'SPG': 1}
+Funds remaining: $21.57
